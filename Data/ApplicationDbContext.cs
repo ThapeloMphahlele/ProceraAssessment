@@ -14,6 +14,7 @@ public class ApplicationDbContext : DbContext
     public DbSet<Account> Accounts { get; set; }
     public DbSet<Transaction> Transactions { get; set; }
     public DbSet<AccountStatus> AccountStatuses { get; set; }
+    public DbSet<User> Users { get; set; }
 
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
@@ -26,17 +27,12 @@ public class ApplicationDbContext : DbContext
         base.OnModelCreating(modelBuilder);
 
         // Enforce the unique indexes that exist in the database
-        modelBuilder.Entity<Person>()
-            .HasIndex(p => p.IdNumber)
-            .IsUnique();
+        modelBuilder.Entity<Person>().HasIndex(p => p.IdNumber).IsUnique();
+        modelBuilder.Entity<Account>().HasIndex(a => a.AccountNumber).IsUnique();
+        modelBuilder.Entity<AccountStatus>().HasIndex(s => s.StatusName).IsUnique();
 
-        modelBuilder.Entity<Account>()
-            .HasIndex(a => a.AccountNumber)
-            .IsUnique();
-
-        modelBuilder.Entity<AccountStatus>()
-            .HasIndex(s => s.StatusName)
-            .IsUnique();
+        // Enforce UNIQUE USERNAME INDEX
+        modelBuilder.Entity<User>().HasIndex(u => u.Username).IsUnique();
 
         // Enforce NoAction delete behavior to match SQL Server
         modelBuilder.Entity<Account>()
