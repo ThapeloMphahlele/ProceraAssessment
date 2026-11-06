@@ -8,6 +8,7 @@ public class AccountStatus
 {
     [Key]
     [Column("code")]
+    [DatabaseGenerated(DatabaseGeneratedOption.None)] // Disables identity generation
     public int Code { get; set; }
 
     [Required]
