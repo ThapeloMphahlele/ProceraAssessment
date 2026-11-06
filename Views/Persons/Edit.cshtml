@@ -1,45 +1,120 @@
 @model ProceraAssessment.ViewModels.PersonEditViewModel
 
 @{
-    ViewData["Title"] = "Edit Person";
+    ViewData["Title"] = "Person Details";
 }
 
 <div class="d-flex justify-content-between align-items-center mb-4 mt-3">
     <h2>@ViewData["Title"]</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
 </div>
 
-<div class="card shadow-sm">
-    <div class="card-body p-4">
-        <form asp-action="Edit" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
-            
-            @* Hidden field to pass the primary key back to the POST action *@
-            <input type="hidden" asp-for="Code" />
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
 
-            <div class="row mb-3">
-                <div class="col-md-6">
-                    <label asp-for="Name" class="form-label"></label>
-                    <input asp-for="Name" class="form-control" />
-                    <span asp-validation-for="Name" class="text-danger"></span>
-                </div>
-                <div class="col-md-6">
-                    <label asp-for="Surname" class="form-label"></label>
-                    <input asp-for="Surname" class="form-control" />
-                    <span asp-validation-for="Surname" class="text-danger"></span>
-                </div>
+<div class="row">
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Personal Information</h5>
             </div>
+            <div class="card-body p-4">
+                @* We pass the id in the route to fulfill the anti-tamper check in the controller *@
+                <form asp-action="Edit" asp-route-id="@Model.Code" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    @* Hidden field to pass the primary key back to the POST action *@
+                    <input type="hidden" asp-for="Code" />
 
-            <div class="mb-4">
-                <label asp-for="IdNumber" class="form-label"></label>
-                <input asp-for="IdNumber" class="form-control" />
-                <span asp-validation-for="IdNumber" class="text-danger"></span>
-            </div>
+                    <div class="mb-3">
+                        <label asp-for="Name" class="form-label"></label>
+                        <input asp-for="Name" class="form-control" />
+                        <span asp-validation-for="Name" class="text-danger"></span>
+                    </div>
 
-            <div class="d-flex gap-2">
-                <button type="submit" class="btn btn-primary">Save Changes</button>
-                <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+                    <div class="mb-3">
+                        <label asp-for="Surname" class="form-label"></label>
+                        <input asp-for="Surname" class="form-control" />
+                        <span asp-validation-for="Surname" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="IdNumber" class="form-label"></label>
+                        <input asp-for="IdNumber" class="form-control" />
+                        <span asp-validation-for="IdNumber" class="text-danger"></span>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                </form>
             </div>
-        </form>
+        </div>
+    </div>
+
+    <div class="col-md-7 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Associated Accounts</h5>
+                @* Placeholder link to the future Accounts module, passing the PersonCode securely *@
+                <a asp-controller="Accounts" asp-action="Create" asp-route-personCode="@Model.Code"
+                   class="btn btn-sm btn-success">
+                    Add Account
+                </a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Accounts.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-3">Account Number</th>
+                                    <th>Balance</th>
+                                    <th>Status</th>
+                                    <th class="text-end pe-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var account in Model.Accounts)
+                                {
+                                    <tr>
+                                        <td class="ps-3">@account.AccountNumber</td>
+                                        <td>@account.OutstandingBalance.ToString("C2")</td>
+                                        <td>
+                                            @if (account.StatusName == "Open")
+                                            {
+                                                <span class="badge bg-success">@account.StatusName</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge bg-secondary">@account.StatusName</span>
+                                            }
+                                        </td>
+                                        <td class="text-end pe-3">
+                                            @* Placeholder link to edit specific account *@
+                                            <a asp-controller="Accounts" asp-action="Edit" asp-route-id="@account.Code"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Edit
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-4 text-muted text-center">
+                        This person has no associated accounts. Click 'Add Account' to create one.
+                    </div>
+                }
+            </div>
+        </div>
     </div>
 </div>
 

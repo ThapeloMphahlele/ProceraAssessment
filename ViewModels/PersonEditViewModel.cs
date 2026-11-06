@@ -17,4 +17,7 @@ public class PersonEditViewModel
     [StringLength(50, ErrorMessage = "ID Number cannot exceed 50 characters.")]
     [Display(Name = "ID Number")]
     public string IdNumber { get; set; } = string.Empty;
+
+    // Added to support the Person Details view
+    public List<AccountListItemViewModel> Accounts { get; set; } = new List<AccountListItemViewModel>();
 }

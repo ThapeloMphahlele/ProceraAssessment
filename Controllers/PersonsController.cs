@@ -121,7 +121,9 @@ public class PersonsController : Controller
     [HttpGet]
     public async Task<IActionResult> Edit(int id)
     {
-        var person = await _context.Persons.FindAsync(id);
+        // Include accounts and their statuses for the details view
+        var person = await _context.Persons.Include(p => p.Accounts).ThenInclude(a => a.AccountStatus).FirstOrDefaultAsync(p => p.Code == id);
+
         if (person == null)
         {
             return NotFound();
@@ -132,7 +134,15 @@ public class PersonsController : Controller
             Code = person.Code,
             Name = person.Name,
             Surname = person.Surname,
-            IdNumber = person.IdNumber
+            IdNumber = person.IdNumber,
+            // Map the accounts to the view model
+            Accounts = person.Accounts.Select(a => new AccountListItemViewModel
+            {
+                Code = a.Code,
+                AccountNumber = a.AccountNumber,
+                OutstandingBalance = a.OutstandingBalance,
+                StatusName = a.AccountStatus.StatusName
+            }).ToList()
         };
 
         return View(model);
@@ -140,10 +150,17 @@ public class PersonsController : Controller
 
     [HttpPost]
     [ValidateAntiForgeryToken]
-    public async Task<IActionResult> Edit(PersonEditViewModel model)
+    public async Task<IActionResult> Edit(int id, PersonEditViewModel model)
     {
+        // Anti-tamper check: Ensure the route ID matches the hidden Code field. This prevents a malicious user from manipulating the hidden input to overwrite another record.
+        if (id != model.Code)
+        {
+            return BadRequest("Invalid request data.");
+        }
+
         if (!ModelState.IsValid)
         {
+            await ReloadAccountsForViewModel(model);
             return View(model);
         }
 
@@ -155,6 +172,7 @@ public class PersonsController : Controller
         if (idExists)
         {
             ModelState.AddModelError("IdNumber", "Another person with this ID Number already exists.");
+            await ReloadAccountsForViewModel(model);
             return View(model);
         }
 
@@ -172,7 +190,10 @@ public class PersonsController : Controller
         try
         {
             await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+
+            // Provide feedback and redirect back to this details page
+            TempData["SuccessMessage"] = "Person details updated successfully.";
+            return RedirectToAction(nameof(Edit), new { id = model.Code });
         }
         catch (DbUpdateException ex)
         {
@@ -188,8 +209,20 @@ public class PersonsController : Controller
                 ModelState.AddModelError(string.Empty, "An unexpected error occurred while saving your changes. Please try again.");
             }
 
+            await ReloadAccountsForViewModel(model);
             return View(model);
         }
+    }
+
+    // Helper method to reload accounts if the POST fails, preventing the UI table from disappearing
+    private async Task ReloadAccountsForViewModel(PersonEditViewModel model)
+    {
+        model.Accounts = await _context.Accounts.Where(a => a.PersonCode == model.Code).Include(a => a.AccountStatus).Select(a => new AccountListItemViewModel{
+            Code = a.Code,
+            AccountNumber = a.AccountNumber,
+            OutstandingBalance = a.OutstandingBalance,
+            StatusName = a.AccountStatus.StatusName
+        }).ToListAsync();
     }
 
     // DELETE ACTIONS
