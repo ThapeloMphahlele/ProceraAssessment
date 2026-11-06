@@ -23,9 +23,45 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
+                        @* The assessment requires these links to be accessible *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
+                               asp-action="Contact">Contact</a>
+                        </li>
+        
+                        @* Only show Persons to authenticated users to avoid confusing UX *@
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Persons"
+                                   asp-action="Index">Persons</a>
+                            </li>
+                        }
+                    </ul>
+    
+                    @* Authentication UI *@
+                    <ul class="navbar-nav">
+                        @if (User.Identity != null && User.Identity.IsAuthenticated)
+                        {
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Hello, @User.Identity.Name</span>
+                            </li>
+                            <li class="nav-item">
+                                <form class="form-inline" asp-controller="Auth" asp-action="Logout" method="post">
+                                    @* The TagHelper automatically injects the antiforgery token here *@
+                                    <button type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+                                </form>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login \ Persons</a>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
