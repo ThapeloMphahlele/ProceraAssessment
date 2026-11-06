@@ -13,10 +13,10 @@ public class Transaction
     [Column("account_code")]
     public int AccountCode { get; set; }
 
-    [Column("transaction_date")]
+    [Column("transaction_date", TypeName = "datetime")]
     public DateTime TransactionDate { get; set; }
 
-    [Column("capture_date")]
+    [Column("capture_date", TypeName = "datetime")]
     public DateTime CaptureDate { get; set; }
 
     [Column("amount", TypeName = "money")]

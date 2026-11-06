@@ -34,7 +34,8 @@ namespace ProceraAssessment.Migrations
                     b.Property<string>("AccountNumber")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("account_number");
 
                     b.Property<decimal>("OutstandingBalance")
@@ -70,7 +71,8 @@ namespace ProceraAssessment.Migrations
                     b.Property<string>("StatusName")
                         .IsRequired()
                         .HasMaxLength(20)
-                        .HasColumnType("nvarchar(20)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(20)")
                         .HasColumnName("status_name");
 
                     b.HasKey("Code");
@@ -93,17 +95,20 @@ namespace ProceraAssessment.Migrations
                     b.Property<string>("IdNumber")
                         .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("id_number");
 
                     b.Property<string>("Name")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("name");
 
                     b.Property<string>("Surname")
                         .HasMaxLength(50)
-                        .HasColumnType("nvarchar(50)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(50)")
                         .HasColumnName("surname");
 
                     b.HasKey("Code");
@@ -132,17 +137,18 @@ namespace ProceraAssessment.Migrations
                         .HasColumnName("amount");
 
                     b.Property<DateTime>("CaptureDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime")
                         .HasColumnName("capture_date");
 
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)")
+                        .IsUnicode(false)
+                        .HasColumnType("varchar(100)")
                         .HasColumnName("description");
 
                     b.Property<DateTime>("TransactionDate")
-                        .HasColumnType("datetime2")
+                        .HasColumnType("datetime")
                         .HasColumnName("transaction_date");
 
                     b.HasKey("Code");
@@ -157,13 +163,13 @@ namespace ProceraAssessment.Migrations
                     b.HasOne("ProceraAssessment.Models.Person", "Person")
                         .WithMany("Accounts")
                         .HasForeignKey("PersonCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.HasOne("ProceraAssessment.Models.AccountStatus", "AccountStatus")
                         .WithMany("Accounts")
                         .HasForeignKey("StatusCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("AccountStatus");
@@ -176,7 +182,7 @@ namespace ProceraAssessment.Migrations
                     b.HasOne("ProceraAssessment.Models.Account", "Account")
                         .WithMany("Transactions")
                         .HasForeignKey("AccountCode")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 
                     b.Navigation("Account");
