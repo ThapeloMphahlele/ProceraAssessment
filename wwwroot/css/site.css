@@ -15,10 +15,31 @@ html {
 html {
   position: relative;
   min-height: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 body {
-  margin-bottom: 60px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  margin-bottom: 0 !important;
+  background-color: #f8f9fa;
+}
+
+.footer {
+  position: relative !important;
+  bottom: auto !important;
+  width: 100%;
+  line-height: normal !important;
+}
+
+.card {
+  transition: box-shadow 0.2s ease-in-out;
+}
+
+.card:hover {
+  box-shadow: 0 .5rem 1rem rgba(0, 0, 0, .08) !important;
 }
 
 .form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
