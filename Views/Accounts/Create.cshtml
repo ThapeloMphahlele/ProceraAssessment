@@ -1,0 +1,47 @@
+@model ProceraAssessment.ViewModels.AccountCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Account";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0">Creating account for: <strong>@Model.PersonFullName</strong></h5>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Create" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            @* Hidden fields to associate the account and maintain UI state across POSTs *@
+            <input type="hidden" asp-for="PersonCode" />
+            <input type="hidden" asp-for="PersonFullName" />
+
+            <div class="mb-4">
+                <label asp-for="AccountNumber" class="form-label"></label>
+                <input asp-for="AccountNumber" class="form-control" />
+                <span asp-validation-for="AccountNumber" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Create Account</button>
+                @* Link back to the Person Details page per requirements *@
+                <a 
+                    asp-controller="Persons" asp-action="Edit" asp-route-id="@Model.PersonCode"
+                    class="btn btn-outline-secondary"
+                >
+                    Cancel
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -1,0 +1,159 @@
+@model ProceraAssessment.ViewModels.AccountEditViewModel
+
+@{
+    ViewData["Title"] = "Account Details";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h2>@ViewData["Title"]</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary">Back to List</a>
+</div>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+<div class="row">
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light">
+                <h5 class="mb-0">Account Information</h5>
+            </div>
+            <div class="card-body p-4">
+                <form asp-action="Edit" asp-route-id="@Model.Code" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    
+                    @* Hidden field to pass the primary key back to the POST action *@
+                    <input type="hidden" asp-for="Code" />
+
+                    <div class="mb-3">
+                        <label class="form-label text-muted">Account Holder</label>
+                        <input class="form-control" value="@Model.PersonFullName" disabled />
+                    </div>
+
+                    <div class="mb-3">
+                        <label asp-for="AccountNumber" class="form-label"></label>
+                        <input asp-for="AccountNumber" class="form-control" />
+                        <span asp-validation-for="AccountNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="row mb-4">
+                        <div class="col-6">
+                            <label class="form-label text-muted">@Html.DisplayNameFor(m => m.OutstandingBalance)</label>
+                            <input class="form-control" value="@Model.OutstandingBalance.ToString("C2")" disabled />
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-muted">@Html.DisplayNameFor(m => m.StatusName)</label>
+                            <input class="form-control" value="@Model.StatusName" disabled />
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+                </form>
+
+                <hr class="my-4" />
+                
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="mb-0 fw-bold">Account Status</h6>
+                        <small class="text-muted">Manage operational status</small>
+                    </div>
+                    
+                    @if (Model.StatusName == "Open")
+                    {
+                        <form asp-action="CloseAccount" asp-route-id="@Model.Code" method="post" class="m-0">
+                            @* Added a JS confirm dialog to prevent accidental clicks *@
+                            <button 
+                                type="submit" class="btn btn-outline-danger btn-sm"
+                                onclick="return confirm('Are you sure you want to close this account?');"
+                            >
+                                Close Account
+                            </button>
+                        </form>
+                    }
+                    else if (Model.StatusName == "Closed")
+                    {
+                        <form asp-action="ReopenAccount" asp-route-id="@Model.Code" method="post" class="m-0">
+                            <button type="submit" class="btn btn-outline-success btn-sm">
+                                Reopen Account
+                            </button>
+                        </form>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-7 mb-4">
+        <div class="card shadow-sm h-100">
+            <div class="card-header bg-light d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">Transactions</h5>
+                @* Placeholder link to the future Transactions module, passing the AccountCode securely *@
+                <a asp-controller="Transactions" asp-action="Create" asp-route-accountCode="@Model.Code"
+                   class="btn btn-sm btn-success">
+                    Add Transaction
+                </a>
+            </div>
+            <div class="card-body p-0">
+                @if (Model.Transactions.Any())
+                {
+                    <div class="table-responsive">
+                        <table class="table table-hover mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="ps-3">Date</th>
+                                    <th>Capture Date</th>
+                                    <th>Description</th>
+                                    <th>Amount</th>
+                                    <th class="text-end pe-3">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var transaction in Model.Transactions)
+                                {
+                                    <tr>
+                                        <td class="ps-3">@transaction.TransactionDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@transaction.CaptureDate.ToString("yyyy-MM-dd")</td>
+                                        <td>@transaction.Description</td>
+                                        <td>@transaction.Amount.ToString("C2")</td>
+                                        <td class="text-end pe-3">
+                                            @* Placeholder link to edit specific transaction *@
+                                            <a asp-controller="Transactions" asp-action="Edit" asp-route-id="@transaction.Code"
+                                               class="btn btn-sm btn-outline-primary">
+                                                Edit
+                                            </a>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                }
+                else
+                {
+                    <div class="p-4 text-muted text-center">
+                        This account has no transactions. Click 'Add Transaction' to record one.
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

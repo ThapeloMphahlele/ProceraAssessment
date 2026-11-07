@@ -9,6 +9,10 @@ public class AccountListItemViewModel
     [Display(Name = "Account Number")]
     public string AccountNumber { get; set; } = string.Empty;
 
+    public string? PersonName { get; set; }
+
+    public string? PersonSurname { get; set; }
+
     [Display(Name = "Balance")]
     public decimal OutstandingBalance { get; set; }
 
