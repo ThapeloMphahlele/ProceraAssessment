@@ -22,7 +22,7 @@ public class PersonsController : Controller
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index(string? searchTerm)
+    public async Task<IActionResult> Index(string? searchTerm, int page = 1)
     {
         // Start with a base query on the Persons table
         IQueryable<Models.Person> query = _context.Persons;
@@ -40,7 +40,29 @@ public class PersonsController : Controller
             );
         }
 
-        var personsList = await query.Select(p => new PersonListItemViewModel{
+        // Pagination setup and calculations
+        int pageSize = 10;
+        int totalItems = await query.CountAsync();
+        int totalPages = totalItems > 0 ? (int)Math.Ceiling(totalItems / (double)pageSize) : 1;
+
+        // Handle invalid page numbers gracefully
+        if (page < 1)
+        {
+            page = 1;
+        }
+        else if (page > totalPages)
+        {
+            page = totalPages;
+        }
+
+        // Apply deterministic ordering to ensure consistent pagination
+        query = query.OrderBy(p => p.Code);
+
+        // Apply pagination limits
+        query = query.Skip((page - 1) * pageSize).Take(pageSize);
+
+        var personsList = await query.Select(p => new PersonListItemViewModel
+        {
             Code = p.Code,
             Name = p.Name,
             Surname = p.Surname,
@@ -51,7 +73,10 @@ public class PersonsController : Controller
         var viewModel = new PersonSearchViewModel
         {
             SearchTerm = searchTerm,
-            Persons = personsList
+            Persons = personsList,
+            CurrentPage = page,
+            TotalPages = totalPages,
+            TotalItems = totalItems
         };
 
         return View(viewModel);

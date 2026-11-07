@@ -25,6 +25,8 @@ public class TransactionEditViewModel
 
     [Required(ErrorMessage = "Amount is required.")]
     [Range(0.01, 922337203685477.58, ErrorMessage = "Amount must be a positive value greater than zero.")]
+    [Display(Name = "Amount")]
+    [DisplayFormat(DataFormatString = "{0:F2}", ApplyFormatInEditMode = true)]
     public decimal AbsoluteAmount { get; set; }
 
     [Required(ErrorMessage = "Description is required.")]
