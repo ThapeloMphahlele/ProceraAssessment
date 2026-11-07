@@ -1,8 +1,58 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Home";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="container py-4">
+    <div class="p-5 mb-5 bg-white rounded-3 shadow-sm border text-center">
+        <div class="container-fluid py-3">
+            <h1 class="display-5 fw-bold text-primary mb-3">Procera Financial Systems</h1>
+            <p class="col-md-10 mx-auto fs-5 text-muted mb-4">
+                A secure, robust platform designed to manage persons, enforce account constraints, and track financial
+                transactions with atomic precision.
+            </p>
+            @if (User.Identity != null && User.Identity.IsAuthenticated)
+            {
+                <a asp-controller="Persons" asp-action="Index" class="btn btn-primary btn-lg px-4 shadow-sm">Go to Persons Dashboard</a>
+            }
+            else
+            {
+                <a asp-controller="Auth" asp-action="Login" class="btn btn-primary btn-lg px-4 shadow-sm">Secure Login</a>
+            }
+        </div>
+    </div>
+
+    <div class="row g-4 py-2 row-cols-1 row-cols-md-2 row-cols-lg-4">
+        <div class="col d-flex align-items-start">
+            <div class="card h-100 shadow-sm border-0 w-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">Person Management</h5>
+                    <p class="card-text text-muted">Create and manage client profiles with strict uniqueness constraintsand safe deletion rules.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div class="card h-100 shadow-sm border-0 w-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">Account Management</h5>
+                    <p class="card-text text-muted">Provision unique accounts linked to persons with immutable balance safeguards.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div class="card h-100 shadow-sm border-0 w-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">Status Lifecycle</h5>
+                    <p class="card-text text-muted">Control operational status. Safely close and reopen accounts adhering to zero-balance rules.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col d-flex align-items-start">
+            <div class="card h-100 shadow-sm border-0 w-100">
+                <div class="card-body">
+                    <h5 class="card-title fw-bold text-dark">Transaction Tracking</h5>
+                    <p class="card-text text-muted">Record debits and credits with atomic concurrency controls to ensure financial data integrity.</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

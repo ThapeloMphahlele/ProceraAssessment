@@ -1,65 +1,71 @@
 ﻿<!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - ProceraAssessment</title>
+    <title>@ViewData["Title"] - Procera</title>
     <script type="importmap"></script>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/ProceraAssessment.styles.css" asp-append-version="true" />
 </head>
-<body>
+
+<body class="bg-light">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">ProceraAssessment</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom shadow-sm mb-4">
+            <div class="container">
+                <a class="navbar-brand fw-bold text-primary" asp-area="" asp-controller="Home" asp-action="Index">Procera</a>
+                <button 
+                    class="navbar-toggler" 
+                    type="button" 
+                    data-bs-toggle="collapse" 
+                    data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation"
+                >
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
+                    <ul class="navbar-nav flex-grow-1 gap-2">
+                        @{
+                            var controller = ViewContext.RouteData.Values["Controller"]?.ToString();
+                            var action = ViewContext.RouteData.Values["Action"]?.ToString();
+                        }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                            <a class="nav-link @(controller == "Home" && action == "Index" ? "active fw-semibold text-primary" : "text-dark")" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
-                        @* The assessment requires these links to be accessible *@
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
+                            <a class="nav-link @(controller == "Home" && action == "About" ? "active fw-semibold text-primary" : "text-dark")" asp-area="" asp-controller="Home" asp-action="About">About</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home"
-                               asp-action="Contact">Contact</a>
+                            <a class="nav-link @(controller == "Home" && action == "Contact" ? "active fw-semibold text-primary" : "text-dark")" asp-area="" asp-controller="Home" asp-action="Contact">Contact</a>
                         </li>
         
-                        @* Only show Persons to authenticated users to avoid confusing UX *@
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Persons"
-                                   asp-action="Index">Persons</a>
+                                <a class="nav-link @(controller == "Persons" ? "active fw-semibold text-primary" : "text-dark")" asp-area="" asp-controller="Persons" asp-action="Index">Persons</a>
                             </li>
                         }
                     </ul>
     
-                    @* Authentication UI *@
-                    <ul class="navbar-nav">
+                    <ul class="navbar-nav align-items-center gap-2">
                         @if (User.Identity != null && User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <span class="nav-link text-dark">Hello, @User.Identity.Name</span>
+                                <span class="nav-link text-secondary">Hello, @User.Identity.Name</span>
                             </li>
                             <li class="nav-item">
-                                <form class="form-inline" asp-controller="Auth" asp-action="Logout" method="post">
-                                    @* The TagHelper automatically injects the antiforgery token here *@
-                                    <button type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+                                <form class="form-inline m-0" asp-controller="Auth" asp-action="Logout" method="post">
+                                    <button type="submit" class="btn btn-outline-danger btn-sm rounded-pill px-3">Logout</button>
                                 </form>
                             </li>
                         }
                         else
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-controller="Auth" asp-action="Login">Login \ Persons</a>
+                                <a class="nav-link @(controller == "Auth" ? "active fw-semibold text-primary" : "text-dark")"
+                                   asp-controller="Auth" asp-action="Login">Login \ Persons</a>
                             </li>
                         }
                     </ul>
@@ -68,14 +74,15 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-4">
             @RenderBody()
         </main>
     </div>
 
-    <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2026 - ProceraAssessment - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+    <footer class="border-top footer text-muted bg-white mt-auto">
+        <div class="container py-3 d-flex justify-content-between">
+            <span>&copy; 2026 - Procera Systems Assessment</span>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-decoration-none">Privacy Policy</a>
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -83,4 +90,5 @@
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
+
 </html>

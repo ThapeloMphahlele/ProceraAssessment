@@ -1,0 +1,40 @@
+@{
+    ViewData["Title"] = "About";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+<div class="row">
+    <div class="col-md-7 mb-4">
+        <div class="card shadow-sm h-100 border-0">
+            <div class="card-body p-4">
+                <h4 class="fw-bold text-primary mb-3">System Purpose</h4>
+                <p class="fs-6 text-secondary">
+                    This application is developed as a comprehensive technical assessment project. Its primary purpose
+                    is to provide a robust, secure web solution to manage people, their associated financial accounts,
+                    and the transactions logged against those accounts.
+                </p>
+                <p class="fs-6 text-secondary">
+                    The system enforces strict business rules including zero-balance closures, immutable transaction
+                    history, atomic concurrent balance adjustments, and duplicate prevention.
+                </p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-5 mb-4">
+        <div class="card shadow-sm h-100 border-0 bg-white">
+            <div class="card-body p-4">
+                <h4 class="fw-bold text-dark mb-3">Technology Stack</h4>
+                <ul class="list-group list-group-flush bg-transparent">
+                    <li class="list-group-item bg-transparent text-secondary border-secondary px-0"><strong>ASP.NET Core MVC:</strong> Architecture and routing</li>
+                    <li class="list-group-item bg-transparent text-secondary border-secondary px-0"><strong>Entity Framework Core:</strong> ORM and atomic updates</li>
+                    <li class="list-group-item bg-transparent text-secondary border-secondary px-0"><strong>Microsoft SQL Server:</strong> Relational data store</li>
+                    <li class="list-group-item bg-transparent text-secondary border-secondary px-0"><strong>BCrypt:</strong> Secure password hashing</li>
+                    <li class="list-group-item bg-transparent text-secondary border-0 px-0"><strong>Bootstrap 5:</strong> Responsive user interface</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
