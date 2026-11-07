@@ -1,0 +1,68 @@
+@model ProceraAssessment.ViewModels.TransactionEditViewModel
+
+@{
+    ViewData["Title"] = "Edit Transaction";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4 mt-3">
+    <h2>@ViewData["Title"]</h2>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+        <h5 class="mb-0"><strong>@Model.AccountDisplayInfo</strong></h5>
+    </div>
+    <div class="card-body p-4">
+        <form asp-action="Edit" asp-route-id="@Model.Code" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            @* Hidden fields for routing and security checks *@
+            <input type="hidden" asp-for="Code" />
+            <input type="hidden" asp-for="AccountCode" />
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label asp-for="TransactionDate" class="form-label"></label>
+                    <input asp-for="TransactionDate" class="form-control" type="date" max="@DateTime.Today.ToString("yyyy-MM-dd")" />
+                    <span asp-validation-for="TransactionDate" class="text-danger"></span>
+                </div>
+                <div class="col-md-6">
+                    <label asp-for="Type" class="form-label"></label>
+                    <select 
+                        asp-for="Type" class="form-select"
+                        asp-items="Html.GetEnumSelectList<ProceraAssessment.ViewModels.TransactionType>()"
+                    >
+                        <option value="">-- Select Type --</option>
+                    </select>
+                    <span asp-validation-for="Type" class="text-danger"></span>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="AbsoluteAmount" class="form-label"></label>
+                <div class="input-group">
+                    <span class="input-group-text">R</span>
+                    <input asp-for="AbsoluteAmount" class="form-control" type="number" step="0.01" min="0.01" />
+                </div>
+                <span asp-validation-for="AbsoluteAmount" class="text-danger"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="Description" class="form-label"></label>
+                <input asp-for="Description" class="form-control" placeholder="Enter transaction description..." />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">Save Changes</button>
+                <a asp-controller="Accounts" asp-action="Edit" asp-route-id="@Model.AccountCode" class="btn btn-outline-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}
